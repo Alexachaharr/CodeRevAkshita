@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "@types/node": "^24.10.3",
+    "@types/vscode": "^1.107.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "vscode": "^1.1.37"
+  }
+}

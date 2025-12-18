@@ -1,0 +1,27 @@
+{
+  "id": "ORG_SEC_2025",
+  "name": "Org Security & Style Checklist",
+  "items": [
+    {
+      "id": "C1",
+      "title": "No hard-coded credentials",
+      "description": "No secrets, keys, or passwords in code.",
+      "severity": "blocking",
+      "type": "pattern",
+      "pattern": "(api_key|password|secret)\\s*[:=]",
+      "autoFixable": false
+    },
+    {
+      "id": "C2",
+      "title": "Null checks for public API inputs",
+      "description": "Add explicit null/undefined checks before use.",
+      "severity": "major",
+      "type": "ast_rule",
+      "rule": "ensure_null_check",
+      "autoFixable": true,
+      "autoFix": {
+        "replaceTemplate": "if ($MATCH == null) throw new Error('$MATCH is required');"
+      }
+    }
+  ]
+}
