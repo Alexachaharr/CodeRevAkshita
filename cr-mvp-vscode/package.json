@@ -1,78 +1,41 @@
 {
-  "name": "cr-mvp-vscode",
-  "displayName": "Checklist Code Review",
-  "description": "Checklist-driven code review VS Code extension",
+  "name": "coderev-akshita",
+  "displayName": "CodeRev Akshita",
+  "description": "Checklist-driven AI code review VS Code extension",
   "version": "0.0.1",
+  "publisher": "akshitachoudhary",
   "engines": {
-    "vscode": "^1.106.1"
+    "vscode": "^1.107.0"
   },
   "activationEvents": [
-    "onCommand:cr-mvp-vscode.helloWorld",
-    "onCommand:cr-mvp-vscode.loadChecklist",
-    "onCommand:cr-mvp-vscode.showChecklistPanel",
     "onCommand:cr-mvp-vscode.runReview",
-    "onCommand:cr-mvp-vscode.applyFix",
     "onView:checklistView"
   ],
-  "categories": ["Other"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "cr-mvp-vscode.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "cr-mvp-vscode.loadChecklist",
-        "title": "Load Checklist"
-      },
-      {
-        "command": "cr-mvp-vscode.showChecklistPanel",
-        "title": "Show Checklist Panel"
-      },
-      {
         "command": "cr-mvp-vscode.runReview",
-        "title": "Run Review"
-      },
-      {
-        "command": "cr-mvp-vscode.applyFix",
-        "title": "Apply Fix"
+        "title": "Run Code Review"
       }
     ],
     "views": {
       "explorer": [
         {
           "id": "checklistView",
-          "name": "Checklist"
-        }
-      ]
-    },
-    "menus": {
-      "view/item/context": [
-        {
-          "command": "cr-mvp-vscode.applyFix",
-          "when": "view == checklistView && viewItem == finding.autofix",
-          "group": "inline"
+          "name": "Checklist Review"
         }
       ]
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "vscode:prepublish": "npm run compile"
   },
   "devDependencies": {
-    "@types/vscode": "^1.106.1",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "typescript-eslint": "^8.46.3",
-    "eslint": "^9.39.1",
-    "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "@types/node": "^24.10.3",
+    "@types/vscode": "^1.107.0",
+    "typescript": "^5.9.3"
   }
 }

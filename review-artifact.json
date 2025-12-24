@@ -1,0 +1,145 @@
+{
+  "generatedAt": "2025-12-24T12:41:16.326Z",
+  "workspace": "CodeRevAkshita",
+  "findings": [
+    {
+      "ruleId": "C1",
+      "description": "Avoid hard-coded API keys, passwords, or secrets in source code.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/Sample.cs",
+      "line": 3,
+      "snippet": "string password = \"admin123\";",
+      "match": "password =",
+      "language": "csharp"
+    },
+    {
+      "ruleId": "C5",
+      "description": "Avoid hard-coded passwords, secrets, or tokens in C# source files.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/Sample.cs",
+      "line": 3,
+      "snippet": "string password = \"admin123\";",
+      "match": "string password =",
+      "language": "csharp"
+    },
+    {
+      "ruleId": "C1",
+      "description": "Avoid hard-coded API keys, passwords, or secrets in source code.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample.py",
+      "line": 4,
+      "snippet": "password = \"admin123\"",
+      "match": "password =",
+      "language": "python"
+    },
+    {
+      "ruleId": "C3",
+      "description": "Avoid hard-coded passwords, secrets, or tokens in Python files.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample.py",
+      "line": 4,
+      "snippet": "password = \"admin123\"",
+      "match": "password = \"",
+      "language": "python"
+    },
+    {
+      "ruleId": "C1",
+      "description": "Avoid hard-coded API keys, passwords, or secrets in source code.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample-code.ts",
+      "line": 17,
+      "snippet": "const password = \"admin123\";",
+      "match": "password =",
+      "language": "typescript"
+    },
+    {
+      "ruleId": "C1",
+      "description": "Avoid hard-coded API keys, passwords, or secrets in source code.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample-code.ts",
+      "line": 18,
+      "snippet": "const api_key = \"XYZ-SECRET-KEY\";",
+      "match": "api_key =",
+      "language": "typescript"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'user' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample-code.ts",
+      "line": 2,
+      "snippet": "export function createUser(user) {",
+      "match": "user"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'data' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample-code.ts",
+      "line": 13,
+      "snippet": "export function process(data) {",
+      "match": "data"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'input' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample-code.ts",
+      "line": 20,
+      "snippet": "function unsafe(input) {",
+      "match": "input"
+    },
+    {
+      "ruleId": "C1",
+      "description": "Avoid hard-coded API keys, passwords, or secrets in source code.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/Sample.java",
+      "line": 3,
+      "snippet": "String password = \"admin123\";",
+      "match": "password =",
+      "language": "java"
+    },
+    {
+      "ruleId": "C4",
+      "description": "Avoid hard-coded passwords, secrets, or tokens in Java source files.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/Sample.java",
+      "line": 3,
+      "snippet": "String password = \"admin123\";",
+      "match": "String password =",
+      "language": "java"
+    },
+    {
+      "ruleId": "C1",
+      "description": "Avoid hard-coded API keys, passwords, or secrets in source code.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample.ts",
+      "line": 5,
+      "snippet": "const password = \"admin123\";",
+      "match": "password =",
+      "language": "typescript"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'user' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/sample.ts",
+      "line": 1,
+      "snippet": "export function createUser(user) {",
+      "match": "user"
+    }
+  ]
+}

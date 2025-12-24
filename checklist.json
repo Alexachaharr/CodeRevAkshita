@@ -1,0 +1,120 @@
+{
+  "id": "ORG_SEC_2025",
+  "name": "Org Security & Quality Checklist",
+  "items": [
+    {
+      "id": "C1",
+      "title": "No hard-coded secrets",
+      "description": "Avoid hard-coded API keys, passwords, or secrets in source code.",
+      "severity": "error",
+      "type": "pattern",
+      "languages": ["typescript", "javascript", "python", "java", "csharp"],
+      "pattern": "(apiKey|api_key|password|secret|token)\\s*[:=]",
+      "autoFixable": false
+    },
+    {
+      "id": "C2",
+      "title": "Null checks for function parameters (TypeScript)",
+      "description": "Public or exported functions must validate inputs for null or undefined.",
+      "severity": "warning",
+      "type": "ast_rule",
+      "rule": "ensure_null_check",
+      "languages": ["typescript"],
+      "autoFixable": true,
+      "autoFix": {
+        "replaceTemplate": "if ($MATCH == null) { throw new Error('Invalid argument'); }\n$MATCH"
+      }
+    },
+    {
+      "id": "C3",
+      "title": "Hard-coded secrets (Python)",
+      "description": "Avoid hard-coded passwords, secrets, or tokens in Python files.",
+      "severity": "error",
+      "type": "pattern",
+      "languages": ["python"],
+      "pattern": "(password|secret|token)\\s*=\\s*['\"]",
+      "autoFixable": false
+    },
+    {
+      "id": "C4",
+      "title": "Hard-coded secrets (Java)",
+      "description": "Avoid hard-coded passwords, secrets, or tokens in Java source files.",
+      "severity": "error",
+      "type": "pattern",
+      "languages": ["java"],
+      "pattern": "(String)\\s+(password|secret|token)\\s*=",
+      "autoFixable": false
+    },
+    {
+      "id": "C5",
+      "title": "Hard-coded secrets (C#)",
+      "description": "Avoid hard-coded passwords, secrets, or tokens in C# source files.",
+      "severity": "error",
+      "type": "pattern",
+      "languages": ["csharp"],
+      "pattern": "(string)\\s+(password|secret|token)\\s*=",
+      "autoFixable": false
+    },
+    {
+      "id": "C6",
+      "title": "Use of TODO or FIXME comments",
+      "description": "TODO or FIXME comments should not be committed to production code.",
+      "severity": "info",
+      "type": "pattern",
+      "languages": ["typescript", "javascript", "python", "java", "csharp"],
+      "pattern": "(TODO|FIXME)",
+      "autoFixable": false
+    },
+    {
+      "id": "C7",
+      "title": "Use of eval or dynamic execution",
+      "description": "Avoid use of eval or dynamic code execution due to security risks.",
+      "severity": "error",
+      "type": "pattern",
+      "languages": ["typescript", "javascript", "python"],
+      "pattern": "\\b(eval|exec)\\s*\\(",
+      "autoFixable": false
+    },
+    {
+      "id": "C8",
+      "title": "Empty catch or except block",
+      "description": "Empty exception handlers hide errors and should be avoided.",
+      "severity": "warning",
+      "type": "pattern",
+      "languages": ["typescript", "javascript", "python", "java", "csharp"],
+      "pattern": "catch\\s*\\([^)]*\\)\\s*\\{\\s*\\}|except\\s*:\\s*pass",
+      "autoFixable": false
+    },
+    {
+      "id": "C9",
+      "title": "TODO or FIXME in production code",
+      "description": "TODO/FIXME comments should be resolved before production.",
+      "severity": "info",
+      "type": "pattern",
+      "languages": ["typescript", "javascript", "python", "java", "csharp"],
+      "pattern": "(TODO|FIXME)",
+      "autoFixable": false
+    },
+    {
+      "id": "C10",
+      "title": "Large source file",
+      "description": "Files should not exceed 500 lines to maintain readability and maintainability.",
+      "severity": "info",
+      "type": "file_rule",
+      "languages": ["typescript", "javascript", "python", "java", "csharp"],
+      "maxLines": 500,
+      "autoFixable": false
+    },
+    {
+      "id": "C11",
+      "title": "Long lines detected",
+      "description": "Lines longer than 120 characters reduce readability.",
+      "severity": "warning",
+      "type": "line_rule",
+      "languages": ["typescript", "javascript", "python", "java", "csharp"],
+      "maxLength": 120,
+      "autoFixable": false
+    }
+
+  ]
+}

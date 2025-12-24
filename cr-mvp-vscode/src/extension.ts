@@ -7,14 +7,18 @@ type ChecklistItem = {
   title?: string;
   description?: string;
   pattern?: string;
-  type?: string; // "ast_rule" or "pattern"
+  type?: string; // pattern | ast_rule | file_rule | line_rule
   rule?: string;
   severity?: 'info' | 'warning' | 'error' | 'major' | 'blocking';
+  languages?: string[];
+  maxLines?: number;     // ✅ ADD
+  maxLength?: number;    // ✅ ADD
   autoFixable?: boolean;
   autoFix?: {
     replaceTemplate?: string;
   };
 };
+
 
 type ChecklistJson = { items?: ChecklistItem[] };
 
@@ -26,15 +30,31 @@ type Finding = {
   file: string;
   line: number;
   snippet: string;
+  language?: string;
   match?: string;
 };
+
 
 // --- Tree Nodes ---
 class FindingNode extends vscode.TreeItem {
   constructor(public readonly finding: Finding) {
-    super(`${path.basename(finding.file)}:${finding.line} — ${finding.ruleId}`, vscode.TreeItemCollapsibleState.None);
-    this.tooltip = `${finding.file}:${finding.line}\n${finding.snippet}`;
-    this.description = finding.severity;
+    super(
+  `${path.basename(finding.file)}:${finding.line} — ${finding.description}`,
+  vscode.TreeItemCollapsibleState.None
+);
+  this.tooltip =
+   `Rule: ${finding.ruleId}\n` +
+   `Severity: ${finding.severity}\n` +
+   `${finding.file}:${finding.line}\n\n` +
+   finding.snippet;
+
+    this.description = finding.severity.toUpperCase();
+    this.iconPath =
+      finding.severity === 'error'
+      ? new vscode.ThemeIcon('error')
+      : finding.severity === 'warning'
+      ? new vscode.ThemeIcon('warning')
+      : new vscode.ThemeIcon('info');
     this.contextValue = finding.autoFixable ? 'finding.autofix' : 'finding';
   }
 }
@@ -43,7 +63,14 @@ class RuleNode extends vscode.TreeItem {
   constructor(public readonly rule: ChecklistItem) {
     super(`${rule.id ?? rule.description}`, vscode.TreeItemCollapsibleState.Collapsed);
     this.tooltip = `${rule.description}`;
-    this.description = rule.severity ?? '';
+    this.description = rule.severity?.toUpperCase() ?? '';
+    if (rule.severity === 'error') {
+    this.iconPath = new vscode.ThemeIcon('error');
+    } else if (rule.severity === 'warning') {
+    this.iconPath = new vscode.ThemeIcon('warning');
+    } else {
+    this.iconPath = new vscode.ThemeIcon('info');
+    }
     this.contextValue = rule.autoFixable ? 'rule.autofix' : 'rule';
   }
 }
@@ -79,25 +106,35 @@ class ChecklistProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
 // --- Read checklist.json ---
 async function readChecklist(): Promise<ChecklistJson> {
+  console.log('READ CHECKLIST CALLED');
+
   const wf = vscode.workspace.workspaceFolders?.[0];
   if (!wf) {
-    console.warn('No workspace folder open.');
+    console.error('NO WORKSPACE FOLDER');
     return { items: [] };
   }
 
-  const uri = vscode.Uri.joinPath(wf.uri, 'checklist.json');
-  console.log('Trying to read checklist.json at:', uri.fsPath);
+  console.log('Workspace folder:', wf.uri.fsPath);
+
+  const checklistPath = vscode.Uri.joinPath(wf.uri, 'checklist.json');
+  console.log('Looking for checklist at:', checklistPath.fsPath);
 
   try {
-    const raw = await vscode.workspace.fs.readFile(uri);
-    const text = Buffer.from(raw).toString('utf8');
-    console.log('Checklist.json content:', text);
-    return JSON.parse(text) as ChecklistJson;
+    const raw = await vscode.workspace.fs.readFile(checklistPath);
+    const text = Buffer.from(raw).toString();
+    console.log('Checklist file content:', text);
+
+    const parsed = JSON.parse(text);
+    console.log('Parsed checklist items:', parsed.items?.length);
+
+    return parsed;
   } catch (err) {
-    console.error('Failed to read checklist.json:', err);
+    console.error('FAILED TO READ CHECKLIST:', err);
     return { items: [] };
   }
 }
+
+
 
 // --- Helpers ---
 function getLineAt(text: string, index: number): { line: number; snippet: string } {
@@ -156,62 +193,161 @@ function scanAstForNullChecks(sourceText: string, fileName: string): Finding[] {
   visit(sourceFile);
   return findings;
 }
+function getLanguageFromFile(filePath: string): string {
+  if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) return 'typescript';
+  if (filePath.endsWith('.js') || filePath.endsWith('.jsx')) return 'javascript';
+  if (filePath.endsWith('.py')) return 'python';
+  if (filePath.endsWith('.java')) return 'java';
+  if (filePath.endsWith('.cs')) return 'csharp';
+  return 'unknown';
+}
 
 // --- Scan workspace ---
 async function scanWorkspaceForRules(rules: ChecklistItem[]): Promise<Finding[]> {
   const wf = vscode.workspace.workspaceFolders?.[0];
   if (!wf) return [];
-  const files = await vscode.workspace.findFiles('**/*.{ts,tsx}', '**/node_modules/**');
+
+  const files = await vscode.workspace.findFiles(
+    '**/*.{ts,tsx,js,jsx,py,java,cs}',
+    '{**/node_modules/**,**/out/**,**/cr-mvp-vscode/**,**/test/**}'
+  );
+
   const findings: Finding[] = [];
 
   for (const f of files) {
     try {
       const raw = await vscode.workspace.fs.readFile(f);
       const text = Buffer.from(raw).toString('utf8');
+      const language = getLanguageFromFile(f.fsPath);
+      const lines = text.split(/\r\n|\r|\n/);
 
       for (const rule of rules) {
-        if (rule.type === 'ast_rule' && rule.rule === 'ensure_null_check') {
+
+        // ===============================
+        // FILE-LEVEL RULE (max lines)
+        // ===============================
+        if (rule.type === 'file_rule' && rule.maxLines) {
+          if (
+            !rule.languages ||
+            rule.languages.includes(language)
+          ) {
+            if (lines.length > rule.maxLines) {
+              findings.push({
+                ruleId: rule.id ?? 'file_rule',
+                description: rule.description ?? 'File exceeds maximum line count',
+                severity: rule.severity ?? 'info',
+                autoFixable: false,
+                file: f.fsPath,
+                line: 1,
+                snippet: `File has ${lines.length} lines`,
+                language
+              });
+            }
+          }
+          continue;
+        }
+
+        // ===============================
+        // LINE-LEVEL RULE (max length)
+        // ===============================
+        if (rule.type === 'line_rule' && rule.maxLength) {
+          if (
+            !rule.languages ||
+            rule.languages.includes(language)
+          ) {
+            lines.forEach((lineText, index) => {
+              if (lineText.length > rule.maxLength!) {
+                findings.push({
+                  ruleId: rule.id ?? 'line_rule',
+                  description: rule.description ?? 'Line too long',
+                  severity: rule.severity ?? 'warning',
+                  autoFixable: false,
+                  file: f.fsPath,
+                  line: index + 1,
+                  snippet: lineText.trim(),
+                  language
+                });
+              }
+            });
+          }
+          continue;
+        }
+
+        // ===============================
+        // AST RULE (TypeScript only)
+        // ===============================
+        if (
+          rule.type === 'ast_rule' &&
+          rule.rule === 'ensure_null_check' &&
+          language === 'typescript'
+        ) {
           findings.push(...scanAstForNullChecks(text, f.fsPath));
-        } else if (rule.pattern) {
+          continue;
+        }
+
+        // ===============================
+        // PATTERN RULE (all languages)
+        // ===============================
+        if (
+          rule.pattern &&
+          (!rule.languages || rule.languages.includes(language))
+        ) {
+
           let re: RegExp;
-          try { re = new RegExp(rule.pattern, 'g'); } catch { continue; }
+          try {
+            re = new RegExp(rule.pattern, 'g');
+          } catch {
+            continue;
+          }
+
           let m: RegExpExecArray | null;
           while ((m = re.exec(text)) !== null) {
             const idx = m.index;
             const matched = m[0];
             const { line, snippet } = getLineAt(text, idx);
+
             findings.push({
-              ruleId: rule.id ?? 'rule',
+              ruleId: rule.id ?? 'pattern_rule',
               description: rule.description ?? rule.pattern ?? '',
               severity: rule.severity ?? 'warning',
               autoFixable: !!rule.autoFixable,
               file: f.fsPath,
               line,
               snippet,
-              match: matched
+              match: matched,
+              language
             });
+
             if (m.index === re.lastIndex) re.lastIndex++;
           }
         }
       }
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return findings;
 }
 
+
 // --- Activate ---
 export function activate(context: vscode.ExtensionContext) {
   const provider = new ChecklistProvider();
-  vscode.window.createTreeView('checklistView', { treeDataProvider: provider });
+  vscode.window.registerTreeDataProvider('checklistView', provider);
+
 
   // Show Checklist Panel
   const showChecklistPanel = vscode.commands.registerCommand('cr-mvp-vscode.showChecklistPanel', async () => {
+    vscode.window.showInformationMessage('SHOW CHECKLIST PANEL COMMAND TRIGGERED');
+
     const wf = vscode.workspace.workspaceFolders?.[0];
     if (!wf) return vscode.window.showErrorMessage('Open a workspace folder first');
 
     const checklist = await readChecklist();
     const rules = checklist.items ?? [];
+    console.log('RULE COUNT:', rules.length);
+
 
     if (!rules.length) {
       vscode.window.showWarningMessage('No checklist items found in checklist.json');
@@ -275,5 +411,4 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(applyFix);
 }
-
-export function deactivate() {}
+export function deactivate() {} 
