@@ -56,6 +56,12 @@ class FindingNode extends vscode.TreeItem {
       ? new vscode.ThemeIcon('warning')
       : new vscode.ThemeIcon('info');
     this.contextValue = finding.autoFixable ? 'finding.autofix' : 'finding';
+      this.command = {
+      command: 'coderev.openFinding',
+      title: 'Open Finding',
+      arguments: [finding]
+    };
+
   }
 }
 
@@ -333,6 +339,25 @@ async function scanWorkspaceForRules(rules: ChecklistItem[]): Promise<Finding[]>
 
 // --- Activate ---
 export function activate(context: vscode.ExtensionContext) {
+    const openFinding = vscode.commands.registerCommand(
+    'coderev.openFinding',
+    async (finding: Finding) => {
+      const uri = vscode.Uri.file(finding.file);
+      const doc = await vscode.workspace.openTextDocument(uri);
+      const editor = await vscode.window.showTextDocument(doc);
+
+      const line = Math.max(finding.line - 1, 0);
+      const lineText = doc.lineAt(line);
+const range = lineText.range;
+
+editor.selection = new vscode.Selection(range.start, range.end);
+
+      editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+    }
+  );
+
+  context.subscriptions.push(openFinding);
+
   const provider = new ChecklistProvider();
   vscode.window.registerTreeDataProvider('checklistView', provider);
 
