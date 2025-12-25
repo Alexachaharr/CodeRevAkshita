@@ -209,14 +209,10 @@ function getLanguageFromFile(filePath: string): string {
 }
 
 // --- Scan workspace ---
-async function scanWorkspaceForRules(rules: ChecklistItem[]): Promise<Finding[]> {
-  const wf = vscode.workspace.workspaceFolders?.[0];
-  if (!wf) return [];
-
-  const files = await vscode.workspace.findFiles(
-    '**/*.{ts,tsx,js,jsx,py,java,cs}',
-    '{**/node_modules/**,**/out/**,**/cr-mvp-vscode/**,**/test/**}'
-  );
+async function scanWorkspaceForRules(
+  rules: ChecklistItem[],
+  files: vscode.Uri[]
+): Promise<Finding[]> {
 
   const findings: Finding[] = [];
 
@@ -384,27 +380,85 @@ editor.selection = new vscode.Selection(range.start, range.end);
   });
   context.subscriptions.push(showChecklistPanel);
 
-  // Run Review
-  const runReview = vscode.commands.registerCommand('cr-mvp-vscode.runReview', async () => {
-    const wf = vscode.workspace.workspaceFolders?.[0];
-    if (!wf) return vscode.window.showErrorMessage('Open a workspace folder first');
+  // ==============================
+// Run Review Command (FINAL FIXED)
+// ==============================
+const runReview = vscode.commands.registerCommand(
+  'cr-mvp-vscode.runReview',
+  async () => {
 
-    vscode.window.showInformationMessage('Running checklist review...');
+    // Ask user: Single file OR whole workspace
+    const scopePick = await vscode.window.showQuickPick(
+      ['Single File', 'Entire Workspace'],
+      { placeHolder: "Select review scope", canPickMany: false }
+    );
 
+    // convert `string` → union → avoid TS error
+    const scope = scopePick as "Single File" | "Entire Workspace" | undefined;
+    if (!scope) return;
+
+    // Collect files
+    let files: vscode.Uri[] = [];
+
+    if (scope === "Single File") {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showErrorMessage("No active file open.");
+        return;
+      }
+      files = [editor.document.uri];
+    } else {
+      files = await vscode.workspace.findFiles(
+        "**/*.{ts,tsx,js,jsx,py,java,cs}",
+        "{**/node_modules/**,**/out/**,**/test/**}"
+      );
+    }
+
+    if (!files.length) {
+      vscode.window.showWarningMessage("No files found to review.");
+      return;
+    }
+
+    // Load checklist
     const checklist = await readChecklist();
     const rules = checklist.items ?? [];
-    const findings = await scanWorkspaceForRules(rules);
 
+    // Run scanner
+    const findings = await scanWorkspaceForRules(rules, files);
+
+    // Update left panel
     provider.refresh(rules, findings);
 
-    const artifact = { generatedAt: new Date().toISOString(), workspace: wf.name, findings };
-    const artifactUri = vscode.Uri.joinPath(wf.uri, 'review-artifact.json');
-    await vscode.workspace.fs.writeFile(artifactUri, Buffer.from(JSON.stringify(artifact, null, 2), 'utf8'));
-    const doc = await vscode.workspace.openTextDocument(artifactUri);
-    vscode.window.showTextDocument(doc, { preview: false });
-    vscode.window.showInformationMessage(`Review complete — ${findings.length} findings.`);
-  });
-  context.subscriptions.push(runReview);
+    // Write artifact
+    const wf = vscode.workspace.workspaceFolders?.[0];
+    if (wf) {
+      const artifactUri = vscode.Uri.joinPath(wf.uri, "review-artifact.json");
+      await vscode.workspace.fs.writeFile(
+        artifactUri,
+        Buffer.from(
+          JSON.stringify(
+            {
+              generatedAt: new Date().toISOString(),
+              scope,
+              findings,
+            },
+            null,
+            2
+          ),
+          "utf8"
+        )
+      );
+      vscode.window.showTextDocument(await vscode.workspace.openTextDocument(artifactUri));
+    }
+
+    vscode.window.showInformationMessage(
+      `Review complete (${scope}) — ${findings.length} issue(s).`
+    );
+  }
+);
+context.subscriptions.push(runReview);
+
+
 
   // Apply Auto-Fix
   const applyFix = vscode.commands.registerCommand('cr-mvp-vscode.applyFix', async (nodeOrFinding?: any) => {

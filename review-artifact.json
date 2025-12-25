@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-12-25T13:53:35.605Z",
-  "workspace": "CodeRevAkshita",
+  "generatedAt": "2025-12-25T17:01:25.139Z",
+  "scope": "Entire Workspace",
   "findings": [
     {
       "ruleId": "C1",
@@ -140,6 +140,247 @@
       "line": 1,
       "snippet": "export function createUser(user) {",
       "match": "user"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'rules' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 90,
+      "snippet": "refresh(rules?: ChecklistItem[], findings?: Finding[]) {",
+      "match": "rules"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'findings' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 90,
+      "snippet": "refresh(rules?: ChecklistItem[], findings?: Finding[]) {",
+      "match": "findings"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'element' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 96,
+      "snippet": "getTreeItem(element: vscode.TreeItem): vscode.TreeItem {",
+      "match": "element"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'element' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 100,
+      "snippet": "async getChildren(element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {",
+      "match": "element"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'r' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 102,
+      "snippet": "return (this.rules || []).map(r => new RuleNode(r));",
+      "match": "r"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'f' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 106,
+      "snippet": "const matches = (this.findings || []).filter(f => f.ruleId === id);",
+      "match": "f"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'f' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 107,
+      "snippet": "return matches.map(f => new FindingNode(f));",
+      "match": "f"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'text' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 146,
+      "snippet": "function getLineAt(text: string, index: number): { line: number; snippet: string } {",
+      "match": "text"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'index' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 146,
+      "snippet": "function getLineAt(text: string, index: number): { line: number; snippet: string } {",
+      "match": "index"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'sourceText' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 155,
+      "snippet": "function scanAstForNullChecks(sourceText: string, fileName: string): Finding[] {",
+      "match": "sourceText"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'fileName' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 155,
+      "snippet": "function scanAstForNullChecks(sourceText: string, fileName: string): Finding[] {",
+      "match": "fileName"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'node' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 159,
+      "snippet": "function visit(node: ts.Node) {",
+      "match": "node"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'n' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 167,
+      "snippet": "function checkNode(n: ts.Node) {",
+      "match": "n"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'filePath' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 202,
+      "snippet": "function getLanguageFromFile(filePath: string): string {",
+      "match": "filePath"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'rules' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 212,
+      "snippet": "async function scanWorkspaceForRules(",
+      "match": "rules"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'files' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 213,
+      "snippet": "rules: ChecklistItem[],",
+      "match": "files"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'lineText' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 260,
+      "snippet": "lines.forEach((lineText, index) => {",
+      "match": "lineText"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'index' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 260,
+      "snippet": "lines.forEach((lineText, index) => {",
+      "match": "index"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'context' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 337,
+      "snippet": "export function activate(context: vscode.ExtensionContext) {",
+      "match": "context"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'finding' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 340,
+      "snippet": "async (finding: Finding) => {",
+      "match": "finding"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'nodeOrFinding' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 464,
+      "snippet": "const applyFix = vscode.commands.registerCommand('cr-mvp-vscode.applyFix', async (nodeOrFinding?: any) => {",
+      "match": "nodeOrFinding"
+    },
+    {
+      "ruleId": "C2",
+      "description": "Parameter 'r' missing null/undefined check",
+      "severity": "warning",
+      "autoFixable": true,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 471,
+      "snippet": "const rule = (checklist.items ?? []).find(r => (r.id ?? r.description) === targetFinding!.ruleId);",
+      "match": "r"
+    },
+    {
+      "ruleId": "C7",
+      "description": "Avoid use of eval or dynamic code execution due to security risks.",
+      "severity": "error",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 306,
+      "snippet": "while ((m = re.exec(text)) !== null) {",
+      "match": "exec(",
+      "language": "typescript"
+    },
+    {
+      "ruleId": "C11",
+      "description": "Lines longer than 120 characters reduce readability.",
+      "severity": "warning",
+      "autoFixable": false,
+      "file": "/Users/akshitachoudhary/Documents/CodeRevAkshita/cr-mvp-vscode/src/extension.ts",
+      "line": 160,
+      "snippet": "if (ts.isFunctionDeclaration(node) || ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isMethodDeclaration(node)) {",
+      "language": "typescript"
     }
   ]
 }
